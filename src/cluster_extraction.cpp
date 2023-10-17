@@ -174,7 +174,7 @@ void ProcessAndRenderPointCloud (Renderer& renderer, pcl::PointCloud<pcl::PointX
     seg.setModelType(pcl::SACMODEL_PLANE);
     seg.setMethodType(pcl::SAC_RANSAC);
     seg.setMaxIterations(100);
-    seg.setDistanceThreshold(0.02);
+    seg.setDistanceThreshold(0.2);
 
     
     /*
@@ -286,14 +286,16 @@ void ProcessAndRenderPointCloud (Renderer& renderer, pcl::PointCloud<pcl::PointX
     for(std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it) {
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_cluster (new pcl::PointCloud<pcl::PointXYZ>);
         for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); ++pit)
-            cloud_cluster->push_back ((*cloud_filtered)[*pit]); 
+        cloud_cluster->push_back ((*cloud_filtered)[*pit]); 
         cloud_cluster->width = cloud_cluster->size ();
         cloud_cluster->height = 1;
         cloud_cluster->is_dense = true;
 
-        renderer.RenderPointCloud(cloud_filtered,"originalCloud"+std::to_string(clusterId),colors[2]);
+        // renderer.RenderPointCloud(cloud,"originalCloud"+std::to_string(clusterId),colors[2]);
         // TODO: 7) render the cluster and plane without rendering the original cloud 
         //<-- here
+        renderer.RenderPointCloud(cloud_cluster, "clusterCloud"+std::to_string(clusterId), colors[1]);
+        renderer.RenderPointCloud(cloud_plane, "planeCloud"+std::to_string(clusterId), colors[3]);
         //----------
 
         // Here we create the bounding box on the detected clusters
