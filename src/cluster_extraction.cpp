@@ -135,7 +135,7 @@ void ProcessAndRenderPointCloud (Renderer& renderer, pcl::PointCloud<pcl::PointX
     // Set the cloud to be filtered.
     vg.setInputCloud(cloud);
     // Downsample the dataset by 1dm leaf size.
-    vg.setLeafSize(0.1f, 0.1f, 0.1f); //Set the voxel grid
+    vg.setLeafSize(0.01f, 0.15f, 0.12f); //Set the voxel grid
     // Apply the filter and store it in the host cloud.
     vg.filter(*cloud_filtered);
     // [DEBUG] output.
@@ -273,7 +273,7 @@ void ProcessAndRenderPointCloud (Renderer& renderer, pcl::PointCloud<pcl::PointX
         cluster_indices = euclideanCluster(cloud_filtered, &treeM, clusterTolerance, setMinClusterSize, setMaxClusterSize);
     #endif
 
-    std::vector<Color> colors = {Color(1,0,0), Color(1,1,0), Color(0,0,1), Color(1,0,1), Color(0,1,1)};
+    std::vector<Color> colors = {Color(1,0,0), Color(1,1,0), Color(0,0,1), Color(1,0,1), Color(0,1,1), Color(0,1,0)};
 
 
     /**Now we extracted the clusters out of our point cloud and saved the indices in cluster_indices. 
@@ -294,8 +294,8 @@ void ProcessAndRenderPointCloud (Renderer& renderer, pcl::PointCloud<pcl::PointX
         // renderer.RenderPointCloud(cloud,"originalCloud"+std::to_string(clusterId),colors[2]);
         // TODO: 7) render the cluster and plane without rendering the original cloud 
         //<-- here
-        renderer.RenderPointCloud(cloud_cluster, "clusterCloud"+std::to_string(clusterId), colors[1]);
-        renderer.RenderPointCloud(cloud_plane, "planeCloud"+std::to_string(clusterId), colors[3]);
+        renderer.RenderPointCloud(cloud_cluster, "clusterCloud"+std::to_string(clusterId), colors[2]);
+        renderer.RenderPointCloud(cloud_plane, "planeCloud"+std::to_string(clusterId), colors[5]);
         //----------
 
         // Here we create the bounding box on the detected clusters
@@ -307,7 +307,12 @@ void ProcessAndRenderPointCloud (Renderer& renderer, pcl::PointCloud<pcl::PointX
         maxPt.x, maxPt.y, maxPt.z};
         //TODO: 9) Here you can color the vehicles that are both in front and 5 meters away from the ego vehicle
         //please take a look at the function RenderBox to see how to color the box
-        renderer.RenderBox(box, j);
+        if (box.x_min < 5 && box.x_max> -5) {
+            renderer.RenderBox(box, j, colors[0]);
+        } else {
+            renderer.RenderBox(box, j, colors[4]);
+        }
+        
 
         ++clusterId;
         j++;
@@ -334,7 +339,7 @@ int main(int argc, char* argv[]) {
                                              boost::filesystem::directory_iterator{});
     */
     std::vector<fs::path> stream;
-    for (const auto& entry : fs::directory_iterator("/home/andreatirelli/Developments/platform/perception/assignment_1/dataset_1/")) {
+    for (const auto& entry : fs::directory_iterator("/Users/andreatirelli/Developments/platforms_algorithms/perception/platform_assignment_1/dataset_1/")) {
         stream.push_back(entry.path());
     }
 
