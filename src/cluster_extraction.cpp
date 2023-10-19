@@ -135,7 +135,7 @@ void ProcessAndRenderPointCloud (Renderer& renderer, pcl::PointCloud<pcl::PointX
     // Set the cloud to be filtered.
     vg.setInputCloud(cloud);
     // Downsample the dataset by 1dm leaf size.
-    vg.setLeafSize(0.01f, 0.15f, 0.12f); //Set the voxel grid
+    vg.setLeafSize(0.1f, 0.15f, 0.12f); //Set the voxel grid
     // Apply the filter and store it in the host cloud.
     vg.filter(*cloud_filtered);
     // [DEBUG] output.
@@ -303,11 +303,12 @@ void ProcessAndRenderPointCloud (Renderer& renderer, pcl::PointCloud<pcl::PointX
         pcl::getMinMax3D(*cloud_cluster, minPt, maxPt);
 
         //TODO: 8) Here you can plot the distance of each cluster w.r.t ego vehicle
-        Box box{minPt.x, minPt.y, minPt.z,
-        maxPt.x, maxPt.y, maxPt.z};
+        Box box{minPt.x, minPt.y, minPt.z, maxPt.x, maxPt.y, maxPt.z};
+        std::cout<<"The veichle J = "<<j<<" - position ("<<(minPt.x + maxPt.x) / 2<<", "<<(minPt.y + maxPt.y) / 2<<", "<<(minPt.z + maxPt.z) / 2<<")."<<endl;
         //TODO: 9) Here you can color the vehicles that are both in front and 5 meters away from the ego vehicle
         //please take a look at the function RenderBox to see how to color the box
         if (box.x_min < 5 && box.x_max> -5) {
+            std::cout<<"@@@ Veichle J = "<<j<<" in range!"<<endl;
             renderer.RenderBox(box, j, colors[0]);
         } else {
             renderer.RenderBox(box, j, colors[4]);
@@ -335,9 +336,12 @@ int main(int argc, char* argv[]) {
     pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud (new pcl::PointCloud<pcl::PointXYZ>);
 
     /*
+    CMake 13
     std::vector<boost::filesystem::path> stream(boost::filesystem::directory_iterator{"/home/andreatirelli/Developments/platform/perception/assignment_1/dataset_1/"},
                                              boost::filesystem::directory_iterator{});
     */
+
+   // CMake 17
     std::vector<fs::path> stream;
     for (const auto& entry : fs::directory_iterator("/Users/andreatirelli/Developments/platforms_algorithms/perception/platform_assignment_1/dataset_1/")) {
         stream.push_back(entry.path());
@@ -358,8 +362,7 @@ int main(int argc, char* argv[]) {
         ProcessAndRenderPointCloud(renderer,input_cloud);
         auto endTime = std::chrono::steady_clock::now();
         auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
-        std::cout << "[PointCloudProcessor<PointT>::ReadPcdFile] Loaded "
-        << input_cloud->points.size() << " data points from " << streamIterator->string() <<  "plane segmentation took " << elapsedTime.count() << " milliseconds" << std::endl;
+        // std::cout << "[PointCloudProcessor<PointT>::ReadPcdFile] Loaded " << input_cloud->points.size() << " data points from " << streamIterator->string() <<  "plane segmentation took " << elapsedTime.count() << " milliseconds" << std::endl;
 
         streamIterator++;
         if(streamIterator == stream.end())

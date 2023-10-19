@@ -1,8 +1,10 @@
-
 //
 // The original author of the rendering code is Aaron Brown (https://github.com/awbrown90).
 // His code has been slightly modified to make it more structured.
 //
+#include <iostream>
+#include <iomanip>
+#include <string>
 
 #include "../include/Renderer.hpp"
 
@@ -150,6 +152,22 @@ namespace lidar_obstacle_detection
     viewer_->addCube(box.x_min, box.x_max, box.y_min, box.y_max, box.z_min, box.z_max,
                     color.r, color.g, color.b, cubeFill);
 
+    std::string labelText = "label" + std::to_string(id);
+    /*
+      float x = roundf(((box.x_min + box.x_max) / 2) * 100) / 100;
+      float y = roundf(((box.y_min + box.y_max) / 2) * 100) / 100;
+      float z = roundf(((box.z_min + box.z_max) / 2) * 100) / 100;
+      std::string coordinate = "("+std::to_string(x)+", "+std::to_string(y)+", "+std::to_string(z)+")";
+    */
+    std::ostringstream x;
+    std::ostringstream y;
+    std::ostringstream z;
+    x<<std::fixed<<std::setprecision(2)<<((box.x_min + box.x_max) / 2);
+    y<<std::fixed<<std::setprecision(2)<<((box.y_min + box.y_max) / 2);
+    z<<std::fixed<<std::setprecision(2)<<((box.z_min + box.z_max) / 2);
+    std::string coordinate = "("+x.str()+", "+y.str()+", "+z.str()+")";
+    viewer_->addText3D(coordinate, pcl::PointXYZ((box.x_min + box.x_max) / 2, (box.y_min + box.y_max) / 2, (box.z_min + box.z_max) / 2), 0.5, 1.0, 1.0, 1.0, labelText);
+
     viewer_->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_REPRESENTATION,
                                         pcl::visualization::PCL_VISUALIZER_REPRESENTATION_SURFACE, cubeFill);
 
@@ -171,6 +189,7 @@ namespace lidar_obstacle_detection
     viewer_->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_OPACITY, opacity, cube);
 
     std::string cubeFill = "boxFill"+std::to_string(id);
+
     viewer_->addCube(box.bbox_transform, box.bbox_quaternion,
                      box.cube_length, box.cube_width, box.cube_height, cubeFill);
     viewer_->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_REPRESENTATION,
