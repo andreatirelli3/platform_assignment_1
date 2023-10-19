@@ -135,7 +135,7 @@ void ProcessAndRenderPointCloud (Renderer& renderer, pcl::PointCloud<pcl::PointX
     // Set the cloud to be filtered.
     vg.setInputCloud(cloud);
     // Downsample the dataset by 1dm leaf size.
-    vg.setLeafSize(0.1f, 0.15f, 0.12f); //Set the voxel grid
+    vg.setLeafSize(0.04f, 0.08f, 0.08f); //Set the voxel grid
     // Apply the filter and store it in the host cloud.
     vg.filter(*cloud_filtered);
     // [DEBUG] output.
@@ -174,7 +174,7 @@ void ProcessAndRenderPointCloud (Renderer& renderer, pcl::PointCloud<pcl::PointX
     seg.setModelType(pcl::SACMODEL_PLANE);
     seg.setMethodType(pcl::SAC_RANSAC);
     seg.setMaxIterations(100);
-    seg.setDistanceThreshold(0.2);
+    seg.setDistanceThreshold(0.4);
 
     
     /*
