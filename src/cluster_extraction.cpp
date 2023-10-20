@@ -135,7 +135,7 @@ void ProcessAndRenderPointCloud (Renderer& renderer, pcl::PointCloud<pcl::PointX
     // Set the cloud to be filtered.
     vg.setInputCloud(cloud);
     // Downsample the dataset by 1dm leaf size.
-    vg.setLeafSize(0.04f, 0.08f, 0.08f); //Set the voxel grid
+    vg.setLeafSize(0.08f, 0.08f, 0.08f); //Set the voxel grid
     // Apply the filter and store it in the host cloud.
     vg.filter(*cloud_filtered);
     // [DEBUG] output.
@@ -253,7 +253,7 @@ void ProcessAndRenderPointCloud (Renderer& renderer, pcl::PointCloud<pcl::PointX
                 + Save the detected cluster in the vector of PointIndices.
         */
         // Set the spatial tolerance for new cluster candidates.
-        ec.setClusterTolerance(0.2); // 1dm
+        ec.setClusterTolerance(0.3); // 1dm
         // We impose that the clusters found must have at least setMinClusterSize() 
         // points and maximum setMaxClusterSize() points.
         ec.setMinClusterSize(100);
@@ -335,12 +335,18 @@ int main(int argc, char* argv[]) {
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud (new pcl::PointCloud<pcl::PointXYZ>);
 
+    /**
+     * TODO: make a IF statement to select CMake 17 or less
+    */
     /*
     CMake 13
     std::vector<boost::filesystem::path> stream(boost::filesystem::directory_iterator{"/home/andreatirelli/Developments/platform/perception/assignment_1/dataset_1/"},
                                              boost::filesystem::directory_iterator{});
     */
 
+   /** 
+    * TODO: get the datasetpath from argv
+   */
    // CMake 17
     std::vector<fs::path> stream;
     for (const auto& entry : fs::directory_iterator("/Users/andreatirelli/Developments/platforms_algorithms/perception/platform_assignment_1/dataset_1/")) {
@@ -362,6 +368,9 @@ int main(int argc, char* argv[]) {
         ProcessAndRenderPointCloud(renderer,input_cloud);
         auto endTime = std::chrono::steady_clock::now();
         auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+        /**
+         * TODO: Enable this output IF DEBUG=True
+        */
         // std::cout << "[PointCloudProcessor<PointT>::ReadPcdFile] Loaded " << input_cloud->points.size() << " data points from " << streamIterator->string() <<  "plane segmentation took " << elapsedTime.count() << " milliseconds" << std::endl;
 
         streamIterator++;
