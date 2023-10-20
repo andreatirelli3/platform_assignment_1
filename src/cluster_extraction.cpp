@@ -310,7 +310,7 @@ void ProcessAndRenderPointCloud (Renderer& renderer, pcl::PointCloud<pcl::PointX
         std::cout<<"The veichle J = "<<j<<" - position ("<<(minPt.x + maxPt.x) / 2<<", "<<(minPt.y + maxPt.y) / 2<<", "<<(minPt.z + maxPt.z) / 2<<")."<<endl;
         //TODO: 9) Here you can color the vehicles that are both in front and 5 meters away from the ego vehicle
         //please take a look at the function RenderBox to see how to color the box
-        if (box.x_min < 5 && box.x_max> -5 && box.z_min < 5 && box.z_max > -5) {
+        if (box.x_min < 5 && box.x_max> -5) {
             std::cout<<"@@@ Veichle J = "<<j<<" in range!"<<endl;
             renderer.RenderBox(box, j, colors[0]);
         } else {
