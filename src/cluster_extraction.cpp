@@ -17,6 +17,9 @@
 #include <unordered_set>
 #include "../include/tree_utilities.hpp"
 
+/*
+CMake 17
+*/
 #include <filesystem>
 namespace fs = std::filesystem;
 
@@ -307,7 +310,7 @@ void ProcessAndRenderPointCloud (Renderer& renderer, pcl::PointCloud<pcl::PointX
         std::cout<<"The veichle J = "<<j<<" - position ("<<(minPt.x + maxPt.x) / 2<<", "<<(minPt.y + maxPt.y) / 2<<", "<<(minPt.z + maxPt.z) / 2<<")."<<endl;
         //TODO: 9) Here you can color the vehicles that are both in front and 5 meters away from the ego vehicle
         //please take a look at the function RenderBox to see how to color the box
-        if (box.x_min < 5 && box.x_max> -5) {
+        if (box.x_min < 5 && box.x_max> -5 && box.z_min < 5 && box.z_max > -5) {
             std::cout<<"@@@ Veichle J = "<<j<<" in range!"<<endl;
             renderer.RenderBox(box, j, colors[0]);
         } else {
@@ -335,21 +338,18 @@ int main(int argc, char* argv[]) {
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud (new pcl::PointCloud<pcl::PointXYZ>);
 
-    /**
-     * TODO: make a IF statement to select CMake 17 or less
-    */
     /*
     CMake 13
     std::vector<boost::filesystem::path> stream(boost::filesystem::directory_iterator{"/home/andreatirelli/Developments/platform/perception/assignment_1/dataset_1/"},
                                              boost::filesystem::directory_iterator{});
     */
 
-   /** 
-    * TODO: get the datasetpath from argv
-   */
-   // CMake 17
+
+    /*
+    CMake 17
+    */
     std::vector<fs::path> stream;
-    for (const auto& entry : fs::directory_iterator("/Users/andreatirelli/Developments/platforms_algorithms/perception/platform_assignment_1/dataset_1/")) {
+    for (const auto& entry : fs::directory_iterator("/home/andreatirelli/Developments/platform/perception/assignment_1/dataset_1/")) {
         stream.push_back(entry.path());
     }
 
